@@ -1,7 +1,7 @@
+import { app } from "./app";
+
 Bun.serve({
-  fetch(req) {
-    return new Response("Hey hi hello!");
-  },
+  fetch: app.fetch,
 });
 
 console.log("Server started at http://localhost:3000");
