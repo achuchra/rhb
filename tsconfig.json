@@ -25,7 +25,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@/types/*": ["./types/*"]
+      "@/types/*": ["./types/*"],
+      "@/schemas/*": ["./schemas/*"]
     }
   }
 }
