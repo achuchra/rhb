@@ -1,31 +1,37 @@
 import { useState } from "react";
 import "./App.css";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <h1 className="text-2xl font-bold">Vite + React</h1>
-      <div className="flex flex-col gap-2">
-        <button
-          className="bg-stone-500 hover:bg-stone-600 px-8 py-2 rounded-md text-white"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Increase
-        </button>
-        <button
-          className="bg-stone-500 hover:bg-stone-600 px-8 py-2 rounded-md text-white"
+    <Card className="w-[30rem] mx-auto">
+      <CardHeader>
+        <CardTitle>Vite + React</CardTitle>
+        <CardDescription>Test app</CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-center gap-4">
+        <Button onClick={() => setCount((count) => count + 1)}>Increase</Button>
+        <Button
+          variant={"outline"}
           onClick={() => setCount((count) => count - 1)}
         >
           Decrease
-        </button>
-        <p className="text-center">Count is {count}</p>
-      </div>
-      <p className="read-the-docs text-center">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+        </Button>
+      </CardContent>
+      <CardFooter className="flex justify-center">
+        <p>Result: {count} </p>
+      </CardFooter>
+    </Card>
   );
 }
 
