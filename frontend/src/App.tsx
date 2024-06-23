@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,17 @@ import {
 
 function App() {
   const [count, setCount] = useState(0);
+  const [totalSpent, setTotalSpent] = useState<number | null>(null);
+
+  useEffect(() => {
+    const callTotalSpent = async () => {
+      const res = await fetch("/api/v1/expenses/total-spent");
+      const data = await res.json();
+      setTotalSpent(data.total);
+    };
+
+    callTotalSpent();
+  }, []);
 
   return (
     <Card className="w-[30rem] mx-auto">
@@ -28,8 +39,9 @@ function App() {
           Decrease
         </Button>
       </CardContent>
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex flex-col items-center justify-center">
         <p>Result: {count} </p>
+        <p>Total spent: ${totalSpent}</p>
       </CardFooter>
     </Card>
   );

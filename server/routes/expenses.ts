@@ -31,7 +31,7 @@ const fakeExpenses: Expense[] = [
 
 export const expenses = new Hono()
   .get("/", (c) => {
-    return c.json({ exprenses: [{ value: 4.8 }] });
+    return c.json(fakeExpenses);
   })
   .post("/", zValidator("json", expensePostSchema), async (c) => {
     const expense = await c.req.valid("json");
@@ -49,4 +49,8 @@ export const expenses = new Hono()
       return c.notFound();
     }
     return c.json(expense);
+  })
+  .get("/total-spent", (c) => {
+    const total = fakeExpenses.reduce((acc, curr) => acc + curr.value, 0);
+    return c.json({ total });
   });
