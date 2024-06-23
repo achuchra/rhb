@@ -9,19 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 function App() {
   const [count, setCount] = useState(0);
   const [totalSpent, setTotalSpent] = useState<number | null>(null);
 
   useEffect(() => {
-    const callTotalSpent = async () => {
-      const res = await fetch("/api/v1/expenses/total-spent");
+    const getTotalSpent = async () => {
+      const res = await api.expenses["total-spent"].$get();
       const data = await res.json();
       setTotalSpent(data.total);
     };
 
-    callTotalSpent();
+    getTotalSpent();
   }, []);
 
   return (
