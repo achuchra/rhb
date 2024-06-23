@@ -25,6 +25,7 @@
 
     "baseUrl": ".",
     "paths": {
+      "@server/*": ["../server/*"],
       "@/*": ["./src/*"],
       "@/lib": ["./src/lib/*"]
     }
