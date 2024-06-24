@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,20 +10,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const callTotalSpent = async () => {
+  const res = await api.expenses["total-spent"].$get();
+  if (!res.ok) {
+    throw new Error("Failed to fetch total spent");
+  }
+  return await res.json();
+};
 
 function App() {
   const [count, setCount] = useState(0);
-  const [totalSpent, setTotalSpent] = useState<number | null>(null);
 
-  useEffect(() => {
-    const getTotalSpent = async () => {
-      const res = await api.expenses["total-spent"].$get();
-      const data = await res.json();
-      setTotalSpent(data.total);
-    };
+  const { data, error, isPending } = useQuery({
+    queryKey: ["total-spent"],
+    queryFn: callTotalSpent,
+  });
 
-    getTotalSpent();
-  }, []);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <Card className="w-[30rem] mx-auto">
@@ -42,7 +50,9 @@ function App() {
       </CardContent>
       <CardFooter className="flex flex-col items-center justify-center">
         <p>Result: {count} </p>
-        <p>Total spent: ${totalSpent}</p>
+        <div className="mt-4">
+          {isPending ? <Skeleton className="h-6 w-[50px]" /> : `$${data.total}`}
+        </div>
       </CardFooter>
     </Card>
   );

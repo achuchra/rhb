@@ -50,7 +50,8 @@ export const expenses = new Hono()
     }
     return c.json(expense);
   })
-  .get("/total-spent", (c) => {
+  .get("/total-spent", async (c) => {
+    await new Promise((r) => setTimeout(r, 3000));
     const total = fakeExpenses.reduce((acc, curr) => acc + curr.value, 0);
     return c.json({ total });
   });
