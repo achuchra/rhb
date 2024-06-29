@@ -27,6 +27,62 @@ const fakeExpenses: Expense[] = [
     date: new Date(),
     category: "Food & Drinks",
   },
+  {
+    id: 4,
+    title: "Gas",
+    value: 50,
+    description: "Gas for the car",
+    date: new Date(),
+    category: "Transportation",
+  },
+  {
+    id: 5,
+    title: "Internet",
+    value: 80,
+    description: "Internet bill",
+    date: new Date(),
+    category: "Bills & Utilities",
+  },
+  {
+    id: 6,
+    title: "Phone",
+    value: 40,
+    description: "Phone bill",
+    date: new Date(),
+    category: "Bills & Utilities",
+  },
+  {
+    id: 7,
+    title: "Rent",
+    value: 1000,
+    description: "Rent for the apartment",
+    date: new Date(),
+    category: "Home",
+  },
+  {
+    id: 8,
+    title: "Shoes",
+    value: 120,
+    description: "New shoes",
+    date: new Date(),
+    category: "Shopping",
+  },
+  {
+    id: 9,
+    title: "T-shirt",
+    value: 20,
+    description: "New t-shirt",
+    date: new Date(),
+    category: "Shopping",
+  },
+  {
+    id: 10,
+    title: "Socks",
+    value: 10,
+    description: "New socks",
+    date: new Date(),
+    category: "Shopping",
+  },
 ];
 
 export const expenses = new Hono()
@@ -52,6 +108,7 @@ export const expenses = new Hono()
   })
   .get("/total-spent", async (c) => {
     await new Promise((r) => setTimeout(r, 3000));
-    const total = fakeExpenses.reduce((acc, curr) => acc + curr.value, 0);
+    const total =
+      fakeExpenses.reduce((acc, curr) => acc + curr.value, 0) * Math.random();
     return c.json({ total });
   });

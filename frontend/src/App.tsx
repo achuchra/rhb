@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const callTotalSpent = async () => {
@@ -24,15 +24,22 @@ const callTotalSpent = async () => {
 function App() {
   const [count, setCount] = useState(0);
 
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, isRefetching } = useQuery({
     queryKey: ["total-spent"],
     queryFn: callTotalSpent,
   });
 
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("invalidatin query");
+      queryClient.invalidateQueries("total-spent");
+    }, 5000);
+  }, []);
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
   return (
     <Card className="w-[30rem] mx-auto">
       <CardHeader>
@@ -51,7 +58,11 @@ function App() {
       <CardFooter className="flex flex-col items-center justify-center">
         <p>Result: {count} </p>
         <div className="mt-4">
-          {isPending ? <Skeleton className="h-6 w-[50px]" /> : `$${data.total}`}
+          {isPending || isRefetching ? (
+            <Skeleton className="h-6 w-[50px]" />
+          ) : (
+            `$${data.total}`
+          )}
         </div>
       </CardFooter>
     </Card>
