@@ -64,22 +64,19 @@ function Expenses() {
           </TableHeader>
           <TableBody>
             {isPending || isRefetching
-              ? [0, 1, 2, 3, 4].map((i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100%]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100%]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100%]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100%]" />
-                    </TableCell>
-                  </TableRow>
-                ))
+              ? Array(10)
+                  .fill(0)
+                  .map((_, i) => (
+                    <TableRow key={i}>
+                      {Array(4)
+                        .fill(0)
+                        .map((_, i) => (
+                          <TableCell key={i}>
+                            <Skeleton className="h-4 w-[100%]" />
+                          </TableCell>
+                        ))}
+                    </TableRow>
+                  ))
               : data?.map((expense) => (
                   <TableRow key={expense.id}>
                     <TableCell className="font-medium">{expense.id}</TableCell>
