@@ -101,7 +101,6 @@ export const expenses = new Hono()
   })
   .get("/:id{[0-9]+}", (c) => {
     const id = Number(c.req.param("id"));
-    console.log("id", id);
     const expense = fakeExpenses.find((e) => e.id === id);
 
     if (!expense) {
