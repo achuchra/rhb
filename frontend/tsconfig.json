@@ -1,11 +1,43 @@
 {
-	"files": [],
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"compilerOptions": {
+		"target": "ES2021",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		"jsx": "preserve",
+		"incremental": true,
+
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+
+		/* Linting */
+		"strict": true,
+		"strictNullChecks": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@/lib": ["./src/lib/*"],
+			"@/components": ["./src/components/*"],
+			"@server/*": ["../server/*"]
+		}
+	},
+	"include": ["./src/**/*", "**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules"],
 	"references": [
 		{
-			"path": "./tsconfig.app.json"
-		},
-		{
-			"path": "./tsconfig.node.json"
+			"path": "./tsconfig.vite.json"
 		}
 	]
 }
