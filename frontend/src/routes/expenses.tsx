@@ -33,7 +33,7 @@ function Expenses() {
 	const { data, error, isPending, isRefetching } = useQuery({
 		queryKey: ["get-all-expenses"],
 		queryFn: getAllExpenses,
-		cacheTime: 1000 * 60 * 5,
+		gcTime: 1000 * 60 * 5,
 		staleTime: 1000 * 60 * 5,
 	});
 
@@ -43,7 +43,7 @@ function Expenses() {
 				<h1 className="text-2xl font-bold">Expenses</h1>
 				<Button
 					onClick={() => {
-						queryClient.invalidateQueries("get-all-expenses");
+						queryClient.invalidateQueries({ queryKey: ["get-all-expenses"] });
 					}}
 					disabled={isPending || isRefetching}
 				>
