@@ -5,7 +5,7 @@ export const expenseSchema = z.object({
   title: z.string().min(3),
   value: z.number().positive(),
   description: z.string().optional(),
-  date: z.date(),
+  date: z.coerce.date(),
   category: z.string(),
 });
 

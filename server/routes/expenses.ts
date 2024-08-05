@@ -2,7 +2,7 @@ import { expensePostSchema, type Expense } from "@/schemas/expense";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 
-const fakeExpenses: Expense[] = [
+let fakeExpenses: Expense[] = [
   {
     id: 1,
     title: "Coffee",
@@ -93,6 +93,10 @@ export const expenses = new Hono()
   })
   .post("/", zValidator("json", expensePostSchema), async (c) => {
     const expense = await c.req.valid("json");
+    fakeExpenses = [
+      ...fakeExpenses,
+      { ...expense, id: fakeExpenses.length + 1 },
+    ];
     c.status(201);
     return c.json(expense);
   })

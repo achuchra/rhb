@@ -1,13 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createFileRoute } from "@tanstack/react-router";
+import { api } from "@/lib/api";
+import { Expense } from "@server/schemas/expense";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/create-expense")({
 	component: CreateExpense,
 });
+
+const postExpense = async (data: Omit<Expense, "id">) => {
+	console.log("data", data);
+	const apiCall = await api.expenses.$post({ json: data });
+	if (!apiCall.ok) {
+		throw new Error("Failed to post expense");
+	}
+
+	const response = await apiCall.json();
+	return response;
+};
 
 function CreateExpense() {
 	const {
@@ -20,16 +34,29 @@ function CreateExpense() {
 			title: "",
 			value: 0,
 			description: "",
-			date: new Date().toISOString(),
+			date: new Date(),
 			category: "",
 		},
 	});
 	const [showFormInvalid, setShowFormInvalid] = useState(false);
+	const queryClient = useQueryClient();
+	const { mutate } = useMutation({
+		mutationFn: postExpense,
+		retry: 1,
+		retryDelay: 500,
+		gcTime: 0,
+	});
+	const navigate = useNavigate();
 
 	const onSubmitValid = () => {
 		setShowFormInvalid(false);
-		console.log(getValues());
-		console.log("akcja submit");
+
+		mutate(getValues(), {
+			onSuccess: () => {
+				queryClient.invalidateQueries({ queryKey: ["get-all-expenses"] });
+				navigate({ to: "/expenses" });
+			},
+		});
 	};
 
 	const onSubmitInvalid = () => {
@@ -39,7 +66,9 @@ function CreateExpense() {
 	return (
 		<div className="mx-13 max-w-xl p-2 first-letter:mx-0">
 			<form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
-				<Label htmlFor="title">Title</Label>
+				<Label htmlFor="title" className="text-sm text-primary">
+					Title
+				</Label>
 				<Input
 					id="title"
 					type="text"
@@ -51,11 +80,16 @@ function CreateExpense() {
 				/>
 				{errors.title && (
 					<div>
-						<span>{errors.title.message}</span>
+						<span className="text-error text-sm">{errors.title.message}</span>
 					</div>
 				)}
 				<Label htmlFor="value">value</Label>
-				<Input id="value" {...register("value")} type="number" placeholder="value" />
+				<Input
+					id="value"
+					{...register("value", { valueAsNumber: true })}
+					type="number"
+					placeholder="value"
+				/>
 
 				<Label htmlFor="description">description</Label>
 				<Input
@@ -80,7 +114,7 @@ function CreateExpense() {
 					Submit
 				</Button>
 			</form>
-			{showFormInvalid && <h3 className="text-red-700">Form is invalid</h3>}
+			{showFormInvalid && <h3 className="text-error">Form is invalid</h3>}
 		</div>
 	);
 }
