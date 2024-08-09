@@ -1,6 +1,7 @@
 import { expensePostSchema, type Expense } from "@/schemas/expense";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { userMiddleware } from "../kinde";
 
 let fakeExpenses: Expense[] = [
   {
@@ -86,7 +87,9 @@ let fakeExpenses: Expense[] = [
 ];
 
 export const expenses = new Hono()
-  .get("/", async (c) => {
+  .get("/", userMiddleware, async (c) => {
+    const user = c.get("user");
+    c.header("user", JSON.stringify(user));
     await new Promise((r) => setTimeout(r, 3000));
     const data = c.json(fakeExpenses);
     return data;
