@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { api } from "@/lib/api";
-import { Expense } from "@server/schemas/expense";
+import { type Expense } from "@server/schemas/expense";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { api } from "@/lib/api";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/create-expense")({
 	component: CreateExpense,
@@ -80,7 +80,7 @@ function CreateExpense() {
 				/>
 				{errors.title && (
 					<div>
-						<span className="text-error text-sm">{errors.title.message}</span>
+						<span className="text-sm text-error">{errors.title.message}</span>
 					</div>
 				)}
 				<Label htmlFor="value">value</Label>

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -10,7 +11,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const callTotalSpent = async () => {
@@ -18,7 +18,7 @@ const callTotalSpent = async () => {
 	if (!res.ok) {
 		throw new Error("Failed to fetch total spent");
 	}
-	return await res.json();
+	return res.json();
 };
 
 export const Route = createFileRoute("/")({

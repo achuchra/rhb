@@ -1,3 +1,7 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { type Expense } from "@server/schemas/expense";
+import { toast } from "sonner";
 import {
 	Table,
 	TableBody,
@@ -9,17 +13,16 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { api } from "@/lib/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { type Expense } from "@server/schemas/expense";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
 const getAllExpenses = async () => {
 	const response = await api.expenses.$get();
 	if (!response.ok) {
-		throw new Error("Failed to fetch expenses");
+		toast.error("An error occurred while fetching expenses. Please try again later.");
+		return;
 	}
+	toast.success("Expenses fetched successfully", { duration: 5000 });
 	const data = await response.json();
 	return data as Expense[];
 };
@@ -51,7 +54,7 @@ function Expenses() {
 				</Button>
 			</div>
 			<div className="mt-4">
-				{error && <div>Error: {error.message}</div>}
+				{error && <div>Something went wrong</div>}
 				<Table>
 					<TableCaption>A list of your recent expenses</TableCaption>
 					<TableHeader>

@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
 	component: Root,
@@ -32,6 +33,12 @@ function Navbar() {
 			>
 				About
 			</Link>
+			<Link
+				to="/profile"
+				className="hover:text-primary/50 [&.active]:underline [&.active]:underline-offset-4 [&.active]:hover:text-primary"
+			>
+				Profile
+			</Link>
 		</div>
 	);
 }
@@ -41,6 +48,7 @@ function Root() {
 		<>
 			<Navbar></Navbar>
 			<Outlet />
+			<Toaster closeButton />
 			<TanStackRouterDevtools />
 		</>
 	);
