@@ -94,19 +94,24 @@ export const expenses = new Hono()
     const data = c.json(fakeExpenses);
     return data;
   })
-  .post("/", zValidator("json", expensePostSchema), async (c) => {
-    const expense = await c.req.valid("json");
-    fakeExpenses = [
-      ...fakeExpenses,
-      { ...expense, id: fakeExpenses.length + 1 },
-    ];
-    c.status(201);
-    return c.json(expense);
-  })
-  .delete("/", (c) => {
+  .post(
+    "/",
+    userMiddleware,
+    zValidator("json", expensePostSchema),
+    async (c) => {
+      const expense = await c.req.valid("json");
+      fakeExpenses = [
+        ...fakeExpenses,
+        { ...expense, id: fakeExpenses.length + 1 },
+      ];
+      c.status(201);
+      return c.json(expense);
+    }
+  )
+  .delete("/", userMiddleware, (c) => {
     return c.json({});
   })
-  .get("/:id{[0-9]+}", (c) => {
+  .get("/:id{[0-9]+}", userMiddleware, (c) => {
     const id = Number(c.req.param("id"));
     const expense = fakeExpenses.find((e) => e.id === id);
 
@@ -115,7 +120,7 @@ export const expenses = new Hono()
     }
     return c.json(expense);
   })
-  .get("/total-spent", async (c) => {
+  .get("/total-spent", userMiddleware, async (c) => {
     await new Promise((r) => setTimeout(r, 3000));
     const total =
       fakeExpenses.reduce((acc, curr) => acc + curr.value, 0) * Math.random();

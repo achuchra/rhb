@@ -8,7 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/create-expense")({
+export const Route = createFileRoute("/_logged/create-expense")({
+	beforeLoad: () => {
+		return {
+			random: Math.random(),
+		};
+	},
 	component: CreateExpense,
 });
 
@@ -47,6 +52,7 @@ function CreateExpense() {
 		gcTime: 0,
 	});
 	const navigate = useNavigate();
+	const { user } = Route.useRouteContext();
 
 	const onSubmitValid = () => {
 		setShowFormInvalid(false);
@@ -66,6 +72,7 @@ function CreateExpense() {
 	return (
 		<div className="mx-13 max-w-xl p-2 first-letter:mx-0">
 			<form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
+				<h5>Hi, {user?.given_name}! Add your expense here</h5>
 				<Label htmlFor="title" className="text-sm text-primary">
 					Title
 				</Label>

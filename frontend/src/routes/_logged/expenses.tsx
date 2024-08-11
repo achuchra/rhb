@@ -27,7 +27,7 @@ const getAllExpenses = async () => {
 	return data as Expense[];
 };
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_logged/expenses")({
 	component: Expenses,
 });
 

@@ -11,37 +11,43 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ProfileImport } from './routes/profile'
-import { Route as ExpensesImport } from './routes/expenses'
-import { Route as CreateExpenseImport } from './routes/create-expense'
 import { Route as AboutImport } from './routes/about'
+import { Route as LoggedImport } from './routes/_logged'
 import { Route as IndexImport } from './routes/index'
+import { Route as LoggedProfileImport } from './routes/_logged/profile'
+import { Route as LoggedExpensesImport } from './routes/_logged/expenses'
+import { Route as LoggedCreateExpenseImport } from './routes/_logged/create-expense'
 
 // Create/Update Routes
-
-const ProfileRoute = ProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ExpensesRoute = ExpensesImport.update({
-  path: '/expenses',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CreateExpenseRoute = CreateExpenseImport.update({
-  path: '/create-expense',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any)
 
+const LoggedRoute = LoggedImport.update({
+  id: '/_logged',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const LoggedProfileRoute = LoggedProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => LoggedRoute,
+} as any)
+
+const LoggedExpensesRoute = LoggedExpensesImport.update({
+  path: '/expenses',
+  getParentRoute: () => LoggedRoute,
+} as any)
+
+const LoggedCreateExpenseRoute = LoggedCreateExpenseImport.update({
+  path: '/create-expense',
+  getParentRoute: () => LoggedRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -55,6 +61,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/_logged': {
+      id: '/_logged'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LoggedImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -62,26 +75,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/create-expense': {
-      id: '/create-expense'
+    '/_logged/create-expense': {
+      id: '/_logged/create-expense'
       path: '/create-expense'
       fullPath: '/create-expense'
-      preLoaderRoute: typeof CreateExpenseImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof LoggedCreateExpenseImport
+      parentRoute: typeof LoggedImport
     }
-    '/expenses': {
-      id: '/expenses'
+    '/_logged/expenses': {
+      id: '/_logged/expenses'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof ExpensesImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof LoggedExpensesImport
+      parentRoute: typeof LoggedImport
     }
-    '/profile': {
-      id: '/profile'
+    '/_logged/profile': {
+      id: '/_logged/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof LoggedProfileImport
+      parentRoute: typeof LoggedImport
     }
   }
 }
@@ -90,10 +103,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
+  LoggedRoute: LoggedRoute.addChildren({
+    LoggedCreateExpenseRoute,
+    LoggedExpensesRoute,
+    LoggedProfileRoute,
+  }),
   AboutRoute,
-  CreateExpenseRoute,
-  ExpensesRoute,
-  ProfileRoute,
 })
 
 /* prettier-ignore-end */
@@ -105,26 +120,35 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about",
-        "/create-expense",
-        "/expenses",
-        "/profile"
+        "/_logged",
+        "/about"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/_logged": {
+      "filePath": "_logged.tsx",
+      "children": [
+        "/_logged/create-expense",
+        "/_logged/expenses",
+        "/_logged/profile"
+      ]
+    },
     "/about": {
       "filePath": "about.tsx"
     },
-    "/create-expense": {
-      "filePath": "create-expense.tsx"
+    "/_logged/create-expense": {
+      "filePath": "_logged/create-expense.tsx",
+      "parent": "/_logged"
     },
-    "/expenses": {
-      "filePath": "expenses.tsx"
+    "/_logged/expenses": {
+      "filePath": "_logged/expenses.tsx",
+      "parent": "/_logged"
     },
-    "/profile": {
-      "filePath": "profile.tsx"
+    "/_logged/profile": {
+      "filePath": "_logged/profile.tsx",
+      "parent": "/_logged"
     }
   }
 }
