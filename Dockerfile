@@ -24,9 +24,18 @@ RUN apt-get update -qq && \
 COPY --link bun.lockb package.json ./
 RUN bun install --frozen-lockfile --ci
 
+# Install frontend node_modules
+COPY --link frontend/bun.lockb frontend/package.json ./frontend/
+RUN cd frontend && bun install --frozen-lockfile --ci
+
 # Copy application code
 COPY --link . .
 
+# Change to frontend directory and build the frontend app
+WORKDIR /app/frontend
+RUN bun run build
+# Remove all the frontend code except the dist folder
+RUN find . -mindepth 1 ! -regex '^./dist\(/.*\)?' -delete
 
 # Final stage for app image
 FROM base
