@@ -22,11 +22,11 @@ RUN apt-get update -qq && \
 
 # Install node_modules
 COPY --link bun.lockb package.json ./
-RUN bun install --frozen-lockfile --ci
+RUN bun install --ci
 
 # Install frontend node_modules
 COPY --link frontend/bun.lockb frontend/package.json ./frontend/
-RUN cd frontend && bun install --frozen-lockfile --ci
+RUN cd frontend && bun install --ci
 
 # Copy application code
 COPY --link . .
