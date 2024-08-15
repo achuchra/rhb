@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const expenseSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.number(),
+  userId: z.string(),
   title: z.string().min(3),
-  value: z.number().positive(),
+  amount: z.string(),
   description: z.string().optional(),
-  date: z.coerce.date(),
-  category: z.string(),
+  createdAt: z.coerce.date(),
 });
 
 export type Expense = z.infer<typeof expenseSchema>;
