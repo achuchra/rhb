@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type Expense } from "@server/schemas/expense";
 import { toast } from "sonner";
 import {
 	Table,
