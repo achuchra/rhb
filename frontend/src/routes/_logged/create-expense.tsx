@@ -37,10 +37,8 @@ function CreateExpense() {
 	} = useForm({
 		defaultValues: {
 			title: "",
-			value: 0,
+			amount: "0",
 			description: "",
-			date: new Date(),
-			category: "",
 		},
 	});
 	const [showFormInvalid, setShowFormInvalid] = useState(false);
@@ -90,13 +88,8 @@ function CreateExpense() {
 						<span className="text-sm text-error">{errors.title.message}</span>
 					</div>
 				)}
-				<Label htmlFor="value">value</Label>
-				<Input
-					id="value"
-					{...register("value", { valueAsNumber: true })}
-					type="number"
-					placeholder="value"
-				/>
+				<Label htmlFor="amount">amount</Label>
+				<Input id="amount" {...register("amount")} type="number" placeholder="amount" />
 
 				<Label htmlFor="description">description</Label>
 				<Input
@@ -105,17 +98,6 @@ function CreateExpense() {
 					type="text"
 					placeholder="description"
 				/>
-
-				<Label htmlFor="date">date</Label>
-				<Input
-					id="date"
-					{...register("date", { valueAsDate: true })}
-					type="date"
-					placeholder="date"
-				/>
-
-				<Label htmlFor="category">category</Label>
-				<Input id="category" {...register("category")} type="text" placeholder="category" />
 
 				<Button type="submit" onClick={() => {}}>
 					Submit

@@ -4,13 +4,13 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { userMiddleware } from "../kinde";
 import { db } from "../db";
-import { eq } from "drizzle-orm";
+import { eq, sum, and } from "drizzle-orm";
 
 export const expenses = new Hono()
   .get("/", userMiddleware, async (c) => {
     const user = c.get("user");
     c.header("user", JSON.stringify(user));
-    const expenses = db
+    const expenses = await db
       .select()
       .from(expensesDbSchema)
       .where(eq(expensesDbSchema.userId, user.id));
@@ -31,6 +31,7 @@ export const expenses = new Hono()
         .values({
           ...expense,
           userId: user.id,
+          createdAt: new Date(),
         })
         .returning();
 
@@ -41,12 +42,18 @@ export const expenses = new Hono()
   .delete("/", userMiddleware, (c) => {
     return c.json({});
   })
-  .get("/:id{[0-9]+}", userMiddleware, (c) => {
+  .get("/:id{[0-9]+}", userMiddleware, async (c) => {
     const id = Number(c.req.param("id"));
-    const expense = db
+    const expense = await db
       .select()
       .from(expensesDbSchema)
-      .where(eq(expensesDbSchema.id, id));
+      .where(
+        and(
+          eq(expensesDbSchema.id, id),
+          eq(expensesDbSchema.userId, c.var.user.id)
+        )
+      )
+      .then((result) => result[0]);
 
     if (!expense) {
       return c.notFound();
@@ -55,14 +62,12 @@ export const expenses = new Hono()
   })
   .get("/total-spent", userMiddleware, async (c) => {
     const user = c.var.user;
-    const expenses = await db
-      .select()
+    const { total } = await db
+      .select({ total: sum(expensesDbSchema.amount) })
       .from(expensesDbSchema)
-      .where(eq(expensesDbSchema.userId, user.id));
-
-    const total = expenses.reduce((acc, curr) => {
-      return acc + +curr.amount;
-    }, 0);
+      .where(eq(expensesDbSchema.userId, user.id))
+      .then((result) => result[0]);
+    console.log("expenses total?", expenses);
 
     return c.json({ total });
   });

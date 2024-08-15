@@ -24,7 +24,7 @@ const getAllExpenses = async () => {
 	}
 	toast.success("Expenses fetched successfully", { duration: 5000 });
 	const data = await response.json();
-	return data as Expense[];
+	return data;
 };
 
 export const Route = createFileRoute("/_logged/expenses")({
@@ -61,7 +61,8 @@ function Expenses() {
 						<TableRow>
 							<TableHead className="w-[100px]">Id</TableHead>
 							<TableHead>Title</TableHead>
-							<TableHead>Category</TableHead>
+							<TableHead>Description</TableHead>
+							<TableHead>Creation date</TableHead>
 							<TableHead className="text-right">Amount</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -84,19 +85,20 @@ function Expenses() {
 									<TableRow key={expense.id}>
 										<TableCell className="font-medium">{expense.id}</TableCell>
 										<TableCell>{expense.title}</TableCell>
-										<TableCell>{expense.category}</TableCell>
-										<TableCell className="text-right">${expense.value}</TableCell>
+										<TableCell>{expense.description}</TableCell>
+										<TableCell>{new Date(expense.createdAt).toLocaleDateString()}</TableCell>
+										<TableCell className="text-right">${expense.amount}</TableCell>
 									</TableRow>
 								))}
 					</TableBody>
 					<TableFooter className="sticky bottom-0">
 						<TableRow>
-							<TableCell colSpan={4} className="text-right">
+							<TableCell colSpan={5} className="text-right">
 								Total:
 								{isPending || isRefetching ? (
 									<Skeleton className="h-6 w-[50px]" />
 								) : (
-									`$${data?.reduce((acc, expense) => acc + expense.value, 0)}`
+									`$${data?.reduce((acc, expense) => acc + +expense.amount, 0)}`
 								)}
 							</TableCell>
 						</TableRow>
