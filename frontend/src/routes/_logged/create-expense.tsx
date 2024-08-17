@@ -1,4 +1,4 @@
-import { type Expense } from "@server/schemas/expense";
+import { expensePostSchema, type Expense } from "@server/schemas/expense";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Route = createFileRoute("/_logged/create-expense")({
 	beforeLoad: () => {
@@ -18,7 +19,6 @@ export const Route = createFileRoute("/_logged/create-expense")({
 });
 
 const postExpense = async (data: Omit<Expense, "id">) => {
-	console.log("data", data);
 	const apiCall = await api.expenses.$post({ json: data });
 	if (!apiCall.ok) {
 		throw new Error("Failed to post expense");
@@ -35,9 +35,10 @@ function CreateExpense() {
 		getValues,
 		formState: { errors },
 	} = useForm({
+		resolver: zodResolver(expensePostSchema),
 		defaultValues: {
 			title: "",
-			amount: "0",
+			amount: "",
 			description: "",
 		},
 	});
@@ -67,6 +68,8 @@ function CreateExpense() {
 		setShowFormInvalid(true);
 	};
 
+	console.log("errors", errors);
+
 	return (
 		<div className="mx-13 max-w-xl p-2 first-letter:mx-0">
 			<form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
@@ -74,24 +77,26 @@ function CreateExpense() {
 				<Label htmlFor="title" className="text-sm text-primary">
 					Title
 				</Label>
-				<Input
-					id="title"
-					type="text"
-					placeholder="title"
-					{...register("title", {
-						required: "Title is required",
-						maxLength: { value: 20, message: "Title has max length of 20 characters" },
-					})}
-				/>
+				<Input id="title" type="text" placeholder="title" {...register("title")} />
 				{errors.title && (
 					<div>
 						<span className="text-sm text-error">{errors.title.message}</span>
 					</div>
 				)}
-				<Label htmlFor="amount">amount</Label>
-				<Input id="amount" {...register("amount")} type="number" placeholder="amount" />
+				<Label htmlFor="amount">Amount</Label>
+				<Input
+					id="amount"
+					{...register("amount", { required: "It is required!" })}
+					type="string"
+					placeholder="amount"
+				/>
+				{errors.amount && (
+					<div>
+						<span className="text-sm text-error">{errors.amount.message}</span>
+					</div>
+				)}
 
-				<Label htmlFor="description">description</Label>
+				<Label htmlFor="description">Description</Label>
 				<Input
 					id="description"
 					{...register("description")}
